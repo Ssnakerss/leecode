@@ -1,4 +1,4 @@
-module leetcode
+module github.com/Ssnakerss/leecode
 
 go 1.24.1
 
