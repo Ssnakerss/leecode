@@ -6,8 +6,8 @@ import (
 )
 
 func main() {
-	s := "ADOBECODEBANC"
-	t := "ABC"
+	s := "ADOBECoDEBANC"
+	t := "ABCo"
 
 	tKey := makeKeysMap(t)
 
@@ -55,6 +55,9 @@ func findWindow(s string, keys map[string]int) (string, int) {
 				}
 				end = i
 			}
+		}
+		if len(keys) == 0 {
+			break
 		}
 	}
 	if start == -1 || end == -1 || len(keys) > 0 {
