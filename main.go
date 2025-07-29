@@ -2,71 +2,46 @@ package main
 
 import (
 	"fmt"
-	"maps"
 )
 
 func main() {
-	s := "ADOBECoDEBANC"
-	t := "ABCo"
+	// s := funcs.S
+	// t := funcs.T
+	// //  time: 5.3204844s
+	// // s := "ADOBECODEBANC"
+	// // t := "ABC"
 
-	tKey := makeKeysMap(t)
+	// start := time.Now()
+	// minWin := funcs.MinWindow(s, t)
+	// end := time.Since(start)
+	// fmt.Printf("Min window: %s \n time: %v", minWin, end)
 
-	for i, r := range s {
-		if i >= len(s)-len(t) {
-			break
-		}
-		if _, ok := tKey[string(r)]; ok {
-			tKeyCopy := map[string]int{}
-			maps.Copy(tKeyCopy, tKey)
-			w, l := findWindow(s[i:], tKeyCopy)
-			fmt.Printf("%s: %d\n", w, l)
-		}
-	}
+	fmt.Printf("%s \n", countAndSay(10))
+
 }
 
-func makeKeysMap(t string) map[string]int {
-	if len(t) == 0 {
-		return nil
+func countAndSay(n int) string {
+
+	if n == 1 {
+		return "1"
 	}
-	tKey := map[string]int{}
-	for _, r := range t {
-		if _, ok := tKey[string(r)]; !ok {
-			tKey[string(r)] = 1
+
+	return rle(countAndSay(n - 1))
+}
+
+func rle(s string) string {
+	res := ""
+	cnt := 1
+
+	i := 1
+	for ; i < len(s); i++ {
+		if s[i] == s[i-1] {
+			cnt++
 		} else {
-			tKey[string(r)]++
+			res += fmt.Sprintf("%d%s", cnt, string(s[i-1]))
+			cnt = 1
 		}
 	}
-	return tKey
+	res += fmt.Sprintf("%d%s", cnt, string(s[i-1]))
+	return res
 }
-func findWindow(s string, keys map[string]int) (string, int) {
-	start := -1
-	end := -1
-	for i, r := range s {
-		//match kekys list
-		if v, ok := keys[string(r)]; ok {
-			if v > 0 {
-				keys[string(r)]--
-				v--
-				if v == 0 {
-					delete(keys, string(r))
-				}
-				if start == -1 {
-					start = i
-				}
-				end = i
-			}
-		}
-		if len(keys) == 0 {
-			break
-		}
-	}
-	if start == -1 || end == -1 || len(keys) > 0 {
-		return "", 0
-	}
-	return s[start : end+1], end - start + 1
-}
-
-// // Minimum window substring
-// func minWindow(s string, t string) string {
-// 	return ""
-// }
