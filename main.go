@@ -2,46 +2,41 @@ package main
 
 import (
 	"fmt"
+	"time"
 )
 
 func main() {
-	// s := funcs.S
-	// t := funcs.T
-	// //  time: 5.3204844s
-	// // s := "ADOBECODEBANC"
-	// // t := "ABC"
-
-	// start := time.Now()
-	// minWin := funcs.MinWindow(s, t)
-	// end := time.Since(start)
-	// fmt.Printf("Min window: %s \n time: %v", minWin, end)
-
-	fmt.Printf("%s \n", countAndSay(10))
-
+	start := time.Now()
+	fmt.Println(countSpecialNumbers(8087006))
+	end := time.Since(start)
+	fmt.Println(end)
 }
 
-func countAndSay(n int) string {
-
-	if n == 1 {
-		return "1"
+func countSpecialNumbers(n int) int {
+	if n < 10 {
+		return n
 	}
-
-	return rle(countAndSay(n - 1))
-}
-
-func rle(s string) string {
-	res := ""
-	cnt := 1
-
-	i := 1
-	for ; i < len(s); i++ {
-		if s[i] == s[i-1] {
-			cnt++
-		} else {
-			res += fmt.Sprintf("%d%s", cnt, string(s[i-1]))
-			cnt = 1
+	res := 9
+	for i := 10; i <= n; i++ {
+		if checkIfSpecial(i) {
+			res++
 		}
 	}
-	res += fmt.Sprintf("%d%s", cnt, string(s[i-1]))
 	return res
+}
+
+func checkIfSpecial(n int) bool {
+	if n < 10 {
+		return true
+	}
+	m := map[int]bool{}
+
+	for n > 0 {
+		if m[n%10] {
+			return false
+		}
+		m[n%10] = true
+		n = n / 10
+	}
+	return true
 }
