@@ -27,7 +27,7 @@ func main() {
 		digits[i] = d
 	}
 
-	fmt.Println(10 + makeSpecialNumbers(3, "", digits, 135))
+	fmt.Println(makeSpecialNumbers(true, 7, "", digits, 8_087_006))
 
 	// fmt.Println(digits)
 	// var di, dj *digit
@@ -53,20 +53,22 @@ func main() {
 
 }
 
-func makeSpecialNumbers(size int, s string, digits map[int]*digit, target int) int {
+func makeSpecialNumbers(lvl bool, size int, s string, digits map[int]*digit, target int) int {
 	cnt := 0
 	for _, d := range digits {
 		if !d.Used {
 			s1 := s + d.Val
 			if size > 1 {
-				d.Used = true
-				cnt += makeSpecialNumbers(size-1, s1, digits, target)
+				if !(lvl && d.Val == "0") {
+					d.Used = true
+				}
+				cnt += makeSpecialNumbers(false, size-1, s1, digits, target)
 				d.Used = false
 			} else {
 				n, _ := strconv.Atoi(s1)
 				if n <= target {
 					cnt++
-					fmt.Println(s1, "  -  ", checkIfSpecial(n), cnt)
+					// fmt.Println(s1, "  -  ", checkIfSpecial(n), cnt)
 				}
 			}
 		}
