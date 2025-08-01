@@ -2,131 +2,77 @@ package main
 
 import (
 	"fmt"
-	"strconv"
-	"sync"
-)
 
-type digit struct {
-	Used bool
-	Val  string
-}
+	"github.com/Ssnakerss/leecode/funcs"
+)
 
 func main() {
 	// start := time.Now()
-	// fmt.Println(countSpecialNumbers(8_087_006))
-	// //597810
-	// // 553.5011ms
+	fmt.Println(funcs.CountSpecialNumbers(10000) + 1)
+	// // //597810
+	// // // 553.5011ms
 	// end := time.Since(start)
 	// fmt.Println(end)
+	// // num := make([]rune, 3)
+	// start = time.Now()
+	// fmt.Println(funcs.CountSpecialNumbers2(251_100_554))
+	// //597810
+	// //29.7091ms
+	// end = time.Since(start)
+	// fmt.Println(end)
 
-	// num := make([]rune, 3)
+	fmt.Println(countNumbersWithUniqueDigits(4))
 
-	digits := map[int]*digit{}
-	for i := 0; i < 10; i++ {
-		d := &digit{false, strconv.Itoa(i)}
-		digits[i] = d
-	}
-
-	fmt.Println(makeSpecialNumbers(true, 7, "", digits, 8_087_006))
-
-	// fmt.Println(digits)
-	// var di, dj *digit
-
-	// for i := 0; i < 10; i++ {
-	// 	fmt.Println("i: ", i)
-	// 	di = digits[i]
-	// 	di.Used = true
-	// 	for j := i; j < 10; j++ {
-	// 		fmt.Println("  j: ", j)
-	// 		dj = digits[j]
-	// 		dj.Used = true
-	// 		for _, d := range digits {
-	// 			if !d.Used {
-	// 				n, err := strconv.Atoi(di.Val + dj.Val + d.Val)
-	// 				fmt.Println("    ", di.Val+dj.Val+d.Val, "  -  ", checkIfSpecial(n), err)
-	// 			}
-	// 		}
-	// 	}
-	// 	di.Used = false
-	// 	dj.Used = false
-	// }
-
+	fmt.Println(countNumbersWithUniqueDigits2(4))
 }
 
-func makeSpecialNumbers(lvl bool, size int, s string, digits map[int]*digit, target int) int {
+const (
+	f9 = 362880
+)
+
+func countNumbersWithUniqueDigits(n int) int {
+	if n == 0 {
+		return 1
+	}
+	if n == 1 {
+		return 10
+	}
 	cnt := 0
-	for _, d := range digits {
-		if !d.Used {
-			s1 := s + d.Val
-			if size > 1 {
-				if !(lvl && d.Val == "0") {
-					d.Used = true
-				}
-				cnt += makeSpecialNumbers(false, size-1, s1, digits, target)
-				d.Used = false
-			} else {
-				n, _ := strconv.Atoi(s1)
-				if n <= target {
-					cnt++
-					// fmt.Println(s1, "  -  ", checkIfSpecial(n), cnt)
-				}
-			}
-		}
+	for i := 0; i <= n; i++ {
+		d := enum(i)
+		fmt.Println(i, " -> ", d)
+		cnt += enum(i)
 	}
 	return cnt
 }
 
-func countSpecialNumbers(n int) int {
-	if n < 10 {
-		return n
-	}
-	res := 9
-	resC := make(chan bool)
-	wg := &sync.WaitGroup{}
-	go func() {
-		for b := range resC {
-			if b {
-				res++
-			}
-		}
-	}()
-
-	for i := 10; i <= n; i++ {
-		wg.Add(1)
-		go func() {
-			resC <- checkIfSpecial2(i)
-			wg.Done()
-		}()
-	}
-	wg.Wait()
-	close(resC)
-	return res
+func enum(n int) int {
+	return f9/Factorial(9-n) + (n-1)*f9/Factorial(9-n+1)
 }
 
-func checkIfSpecial(n int) bool {
-	if n < 10 {
-		return true
+// Factorial of n
+func Factorial(n int) int {
+	if n == 0 {
+		return 1
 	}
-	m := map[int]bool{}
-	for n > 0 {
-		if m[n%10] {
-			return false
-		}
-		m[n%10] = true
-		n = n / 10
-	}
-	return true
+	return n * Factorial(n-1)
 }
 
-func checkIfSpecial2(n int) bool {
-	m := map[rune]bool{}
-	ns := strconv.Itoa(n)
-	for _, r := range ns {
-		if m[r] {
-			return false
-		} else {
-			m[r] = true
-		}
+func countNumbersWithUniqueDigits2(n int) int {
+	if n == 0 {
+		return 1
 	}
-	return true
+	if n == 1 {
+		return 10
+	}
+
+	result := 10
+	current := 9
+
+	for i := 2; i <= n; i++ {
+		current *= (10 - (i - 1))
+		result += current
+	}
+
+	return result
 }
